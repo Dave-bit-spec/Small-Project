@@ -1,2 +1,2 @@
 # python
-一些乱写的。。。
+Some small projects I wrote myself...
