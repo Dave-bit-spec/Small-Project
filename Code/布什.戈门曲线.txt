@@ -1,0 +1,222 @@
+必要库安装：pip install numpy matplotlib
+
+
+
+
+import numpy as np
+
+import matplotlib.pyplot as plt
+
+
+
+# 定义x的范围（足够大以覆盖y在[-2, 3]时的x值）
+
+x_values = np.linspace(-9, 9, 1000)  # 假设x的范围是-9到9，足够大以覆盖y的范围
+
+
+
+# 计算对应的y值（注意有两个y值对应一个x值，一个在正半轴，一个在负半轴）
+
+y_values_positive = np.sqrt(x_values)  # 正半轴的y值
+
+y_values_negative = -np.sqrt(x_values)  # 负半轴的y值
+
+
+
+# 绘制正半轴的图像
+
+plt.plot(x_values, y_values_positive, label='y = sqrt(x) (y >= 0)')
+
+
+
+# 绘制负半轴的图像，但只绘制y在[-2, 3]范围内的部分
+
+y_mask = (y_values_negative >= -2) & (y_values_negative <= 3)
+
+plt.plot(x_values[y_mask], y_values_negative[y_mask], label='y = -sqrt(x) (-2 <= y <= 3)')
+
+
+
+# 设置图例
+
+plt.legend()
+
+
+
+# 设置x和y轴的标签
+
+plt.xlabel('x')
+
+plt.ylabel('y')
+
+
+
+# 设置y轴的范围
+
+plt.ylim(-2.5, 3.5)  # 稍微扩展y轴范围以便更好地观察图像
+
+
+
+# 显示图像
+
+plt.show()
+
+C++
+
+#include <iostream>
+
+#include <fstream>
+
+#include <cmath>
+
+#include <iomanip>
+
+
+
+int main() {
+
+    // 定义文件输出流
+
+    std::ofstream csvFile("plot_data.csv");
+
+
+
+    // 确保文件打开成功
+
+    if (!csvFile.is_open()) {
+
+        std::cerr << "Unable to open file";
+
+        return 1;
+
+    }
+
+
+
+    // 设置CSV文件的列标题
+
+    csvFile << "x,y_positive,y_negative" << std::endl;
+
+
+
+    // 设定x的范围和步长
+
+    double x_min = 0; // 因为y^2 = x，x的最小值应为0
+
+    double x_max = 9; // 足够大的x值以覆盖y的范围
+
+    double step = 0.01;
+
+
+
+    // 遍历x值并计算对应的y值
+
+    for (double x = x_min; x <= x_max; x += step) {
+
+        double y_positive = std::sqrt(x); // 正半轴的y值
+
+        double y_negative = -std::sqrt(x); // 负半轴的y值，但只考虑[-2, 3]范围内的部分
+
+
+
+        // 如果y_negative在[-2, 3]范围内，则写入文件
+
+        if (y_negative >= -2 && y_negative <= 3) {
+
+            csvFile << x << ',' << y_positive << ',' << y_negative << std::endl;
+
+        }
+
+        // 对于正半轴，始终写入文件（因为它总是非负的）
+
+        csvFile << x << ',' << y_positive << ',' << "NaN" << std::endl; // 使用NaN表示负半轴不可用的点
+
+    }
+
+
+
+    // 关闭文件
+
+    csvFile.close();
+
+
+
+    std::cout << "Data has been written to plot_data.csv" << std::endl;
+
+
+
+    return 0;
+
+}
+
+JAVA
+
+import java.io.BufferedWriter;
+
+import java.io.FileWriter;
+
+import java.io.IOException;
+
+
+
+public class PlotDataGenerator {
+
+
+
+    public static void main(String[] args) {
+
+        // 设定x的范围和步长
+
+        double x_min = 0; // 因为y^2 = x，x的最小值应为0
+
+        double x_max = 9; // 足够大的x值以覆盖y的范围
+
+        double step = 0.01;
+
+
+
+        // 创建CSV文件并写入列标题
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("plot_data.csv"))) {
+
+            writer.write("x,y_positive,y_negative\n");
+
+
+
+            // 遍历x值并计算对应的y值
+
+            for (double x = x_min; x <= x_max; x += step) {
+
+                double y_positive = Math.sqrt(x); // 正半轴的y值
+
+                double y_negative = -Math.sqrt(x); // 负半轴的y值
+
+
+
+                // 如果y_negative在[-2, 3]范围内，则写入文件
+
+                if (y_negative >= -2 && y_negative <= 3) {
+
+                    writer.write(String.format("%.2f,%.2f,%.2f\n", x, y_positive, y_negative));
+
+                }
+
+                // 对于正半轴，始终写入文件（因为它总是非负的）
+
+                writer.write(String.format("%.2f,%.2f,NaN\n", x, y_positive)); // 使用NaN表示负半轴不可用的点
+
+            }
+
+
+
+            System.out.println("Data has been written to plot_data.csv");
+
+        } catch (IOException e) {
+
+            e.printStackTrace();
+
+        }
+
+    }
+
+}

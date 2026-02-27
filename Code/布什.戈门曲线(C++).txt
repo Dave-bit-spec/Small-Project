@@ -1,0 +1,85 @@
+#include <iostream>
+
+#include <fstream>
+
+#include <cmath>
+
+#include <iomanip>
+
+
+
+int main() {
+
+    // 定义文件输出流
+
+    std::ofstream csvFile("plot_data.csv");
+
+
+
+    // 确保文件打开成功
+
+    if (!csvFile.is_open()) {
+
+        std::cerr << "Unable to open file";
+
+        return 1;
+
+    }
+
+
+
+    // 设置CSV文件的列标题
+
+    csvFile << "x,y_positive,y_negative" << std::endl;
+
+
+
+    // 设定x的范围和步长
+
+    double x_min = 0; // 因为y^2 = x，x的最小值应为0
+
+    double x_max = 9; // 足够大的x值以覆盖y的范围
+
+    double step = 0.01;
+
+
+
+    // 遍历x值并计算对应的y值
+
+    for (double x = x_min; x <= x_max; x += step) {
+
+        double y_positive = std::sqrt(x); // 正半轴的y值
+
+        double y_negative = -std::sqrt(x); // 负半轴的y值，但只考虑[-2, 3]范围内的部分
+
+
+
+        // 如果y_negative在[-2, 3]范围内，则写入文件
+
+        if (y_negative >= -2 && y_negative <= 3) {
+
+            csvFile << x << ',' << y_positive << ',' << y_negative << std::endl;
+
+        }
+
+        // 对于正半轴，始终写入文件（因为它总是非负的）
+
+        csvFile << x << ',' << y_positive << ',' << "NaN" << std::endl; // 使用NaN表示负半轴不可用的点
+
+    }
+
+
+
+    // 关闭文件
+
+    csvFile.close();
+
+
+
+    std::cout << "Data has been written to plot_data.csv" << std::endl;
+
+
+
+    return 0;
+
+}
