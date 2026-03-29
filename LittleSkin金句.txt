@@ -12,3 +12,67 @@
 
 我们感到不满的原因就在于我们试图不断地提高自己的要求。
 341310314
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import turtle
+import math
+from colorsys import hsv_to_rgb
+
+# 设置画布
+screen = turtle.Screen()
+screen.bgcolor('black')
+turtle.speed(0)
+screen.tracer(0)
+
+# 创建画笔
+pen = turtle.Turtle()
+pen.hideturtle()
+pen.pensize(1)
+
+# 计算圆上的点
+radius = 250
+num_points = 10000
+points = []
+
+for i in range(num_points):
+    angle = (i / num_points) * 2 * math.pi
+    x = radius * math.cos(angle)
+    y = radius * math.sin(angle)
+    points.append((x, y))  # 修正：添加元组，而不是两个单独的值
+
+# 绘制连接线
+for i in range(num_points):
+    j = (i * 2) % num_points
+
+    # 设置颜色
+    color = hsv_to_rgb(i / num_points, 1, 1)
+    pen.pencolor(color)
+
+    # 移动并绘制
+    pen.penup()
+    pen.goto(points[i])
+    pen.pendown()
+    pen.goto(points[j])
+
+    # 每绘制100条线刷新一次屏幕，提升性能
+
+# 最终刷新
+screen.update()
+screen.tracer(1)  # 恢复自动刷新
+turtle.done()
