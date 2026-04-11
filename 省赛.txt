@@ -1,0 +1,77 @@
+import itertools
+
+
+def solve_for_target(target):
+    # 每行每列和等于 target
+    # 每个数字 1..5 至少出现一次
+    nums = list(range(1, 6))
+    grid = [[0] * 4 for _ in range(4)]
+
+    def check_row_col():
+        # 检查所有行和列的和
+        for i in range(4):
+            if sum(grid[i]) != target:
+                return False
+        for j in range(4):
+            if sum(grid[i][j] for i in range(4)) != target:
+                return False
+        return True
+
+    def all_numbers_used():
+        used = set()
+        for i in range(4):
+            for j in range(4):
+                used.add(grid[i][j])
+        return len(used) == 5  # 1..5 都出现
+
+    # 简单启发式：每行候选组合
+    # 找出所有长度为4、元素在1..5之间、和为target的组合
+    candidates = []
+    for comb in itertools.product(nums, repeat=4):
+        if sum(comb) == target:
+            candidates.append(comb)
+
+    # 回溯搜索
+    def dfs(row):
+        if row == 4:
+            if check_row_col() and all_numbers_used():
+                return True
+            return False
+        for comb in candidates:
+            grid[row] = list(comb)
+            # 剪枝：当前部分列和不能超过target
+            ok = True
+            for j in range(4):
+                col_sum = sum(grid[i][j] for i in range(row + 1))
+                if col_sum > target:
+                    ok = False
+                    break
+                if row == 3 and col_sum != target:
+                    ok = False
+                    break
+            if ok and dfs(row + 1):
+                return True
+        grid[row] = [0] * 4
+        return False
+
+    if dfs(0):
+        return [row[:] for row in grid]
+    else:
+        return None
+
+
+def main():
+    targets = [10, 11, 12, 13, 14]
+    for t in targets:
+        print(f"Target = {t}")
+        sol = solve_for_target(t)
+        if sol:
+            for row in sol:
+                print(" ".join(map(str, row)))
+        else:
+            print("No solution found")
+        print()
+
+
+if __name__ == "__main__":
+    main()
