@@ -11,7 +11,6 @@ from math import *
 
 def tree(n,l):
     pd()#下笔
-    #阴影效果
     t = cos(radians(heading()+45))/8+0.25
     pencolor(t,t,t)
     color('pink')
